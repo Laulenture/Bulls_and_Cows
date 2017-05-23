@@ -1,0 +1,115 @@
+unit Unit1;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+
+type
+  TForm1 = class(TForm)
+    Emot: TEdit;
+    LvotreMot: TLabel;
+    LBulls: TLabel;
+    LCows: TLabel;
+    Ebulls: TEdit;
+    Ecows: TEdit;
+    Bgo: TButton;
+    Breset: TButton;
+    Bquit: TButton;
+    EnbEssai: TEdit;
+    EnbChar: TEdit;
+    Mmots: TMemo;
+    Label1: TLabel;
+    Lvictoire: TLabel;
+    procedure BgoClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure BresetClick(Sender: TObject);
+    procedure checkBulls(Sender: TObject);
+    procedure checkCows(Sender : TObject);
+  private
+    { Déclarations privées }
+  public
+    { Déclarations publiques }
+  end;
+
+var
+  Form1: TForm1;
+  mot : STRING;
+  nbEssai : INTEGER;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.BgoClick(Sender: TObject);
+
+begin
+  checkBulls(Sender);
+  checkCows(Sender);
+end;
+
+procedure TForm1.checkCows(Sender : TObject);
+
+VAR
+  i,j : INTEGER;
+
+begin
+  for I := 1 to length(mot) do
+    begin
+      for j := 1 to length(mot) do
+        begin
+          if I <> j then
+            begin
+              if mot[i] = Emot.Text[j] then Ecows.Text := inttostr(strtoint(Ebulls.Text)+ 1);
+            end;
+        end;
+    end;
+end;
+
+
+procedure TForm1.checkBulls(Sender: TObject);
+
+VAR
+  i : INTEGER;
+
+begin
+  for i := 1 to length(mot) do
+  begin
+    if mot[i] = Emot.Text[i] then
+    begin
+      Ebulls.Text := inttostr(strtoint(Ebulls.Text)+ 1);
+    end;
+  end;
+end;
+
+procedure TForm1.BresetClick(Sender: TObject);
+VAR
+  i : INTEGER;
+
+begin
+    Mmots.Lines.LoadFromFile('mots.txt');  //marche pas jsp pk, à arranger
+    i:=random(10);
+    mot := Mmots.Lines[i];
+    EnbChar.Text := inttostr(length(mot));
+    case length(mot) of
+      3 : nbEssai := 4;
+      4 : nbEssai := 7;
+      5 : nbEssai := 10;
+      6 : nbEssai := 16;
+      7 : nbEssai := 20;
+    end;
+    EnbEssai.text:=inttostr(nbEssai);
+    Ebulls.Text := '0';
+    Ecows.Text := '0';
+    Label1.Caption := mot;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+//VAR
+
+begin
+  BresetClick(Sender);
+end;
+
+end.

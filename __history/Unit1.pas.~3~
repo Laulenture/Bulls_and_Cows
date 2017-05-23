@@ -1,0 +1,71 @@
+unit Unit1;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+
+type
+  TForm1 = class(TForm)
+    Emot: TEdit;
+    LvotreMot: TLabel;
+    LBulls: TLabel;
+    LCows: TLabel;
+    Ebulls: TEdit;
+    Ecows: TEdit;
+    Bgo: TButton;
+    Breset: TButton;
+    Bquit: TButton;
+    EnbEssai: TEdit;
+    Evictoire: TEdit;
+    EnbChar: TEdit;
+    Mmots: TMemo;
+    Label1: TLabel;
+    procedure BgoClick(Sender: TObject; mot : STRING);
+    procedure FormCreate(Sender: TObject; VAR mot : STRING);
+    procedure BresetClick(Sender: TObject);
+  private
+    { Déclarations privées }
+  public
+    { Déclarations publiques }
+  end;
+
+var
+  Form1: TForm1;
+  mot : STRING;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.BgoClick(Sender: TObject; mot : STRING);
+
+VAR
+  i : INTEGER;
+
+begin
+  //for i := 1 to length(mot) do
+
+end;
+
+procedure TForm1.BresetClick(Sender: TObject);
+VAR
+  i : INTEGER;
+
+begin
+    Mmots.Lines.LoadFromFile('mots.txt');  //marche pas jsp pk, à arranger
+    i:=random(10);
+    mot := Mmots.Lines[i];
+    Label1.Caption:=mot;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject; VAR mot : STRING);
+//VAR
+
+begin
+  BresetClick(Sender);
+end;
+
+
+end.

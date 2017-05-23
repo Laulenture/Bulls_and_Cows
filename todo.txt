@@ -1,0 +1,16 @@
+﻿Bulls and cows ! maggle
+
+but du jeu :
+demander un mot à l'utilisateur
+comparer ce mot avec le mots, choisi aléatoirement, de votre fichier (avec 10 mots d'une taille spécifique)
+Vous devrez tester la saisie de l'utilisateur, les mots saisie en majuscule n'est pas accepté,
+les caractère spé ne sont pas accepté, les mots na peuvent pas avoir plusieurs fois la même lettre (isogramme)
+et le mot à un nb de caractère max
+Vous testerez la longueur du mot de l'utilisateur et lui indiquerez si le mot est trop grand ansi que le nb de caractère max
+le joueur à un nombre d'éssaie max en fonction de la taille du mot, si il y a une erreur de saisie (par ex si il a un maj ou si il est trop petit ou grand) le conpteur n'est pas 
+le mot est de 3 à 7 caractère et pour chaque taille de mot un nb d'éssaie différent, 
+3 cara = 4 essai
+4 cara = 7 essai
+5 cara = 10 essai
+6 cara = 16 essai
+7 cara = 20 essai

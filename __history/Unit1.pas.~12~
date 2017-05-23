@@ -1,0 +1,221 @@
+unit Unit1;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+
+type
+  TForm1 = class(TForm)
+    Emot: TEdit;
+    LvotreMot: TLabel;
+    LBulls: TLabel;
+    LCows: TLabel;
+    Ebulls: TEdit;
+    Ecows: TEdit;
+    Bgo: TButton;
+    Breset: TButton;
+    Bquit: TButton;
+    EnbEssai: TEdit;
+    EnbChar: TEdit;
+    Mmots: TMemo;
+    LaffMotDebug: TLabel;
+    LlenMot: TLabel;
+    LnbEssai: TLabel;
+    procedure BgoClick(Sender: TObject);
+    function checkEmot(Sender : TObject) : BOOLEAN;
+    function checkLength(Sender : TObject) : BOOLEAN;
+    procedure checkDefeat(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure BresetClick(Sender: TObject);
+    procedure checkBulls(Sender: TObject);
+    procedure checkCows(Sender : TObject);
+    procedure checkVictory(Sender: TObject);
+    procedure setEssai(Sender : TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure BquitClick(Sender: TObject);
+  private
+    { Déclarations privées }
+  public
+    { Déclarations publiques }
+  end;
+
+var
+  Form1: TForm1;
+  mot : STRING;
+  nbEssai : INTEGER;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.BgoClick(Sender: TObject);
+
+begin
+  if checkEmot(Sender) = true then
+  begin
+    IF checkLength(Sender) = true then
+      begin
+        checkBulls(Sender);
+        checkCows(Sender);
+        checkVictory(Sender);
+      end;
+    end
+  ELSE
+    ShowMessage('wesh alors');
+end;
+
+function TForm1.checkLength(Sender : TObject) : BOOLEAN;   //renvoie true si le mot est de la bonne longeur
+
+BEGIN
+  if length(Emot.Text) <> length(mot) then
+    begin
+      if length(Emot.Text) < length(mot) then
+        begin
+          checkLength := false;
+          ShowMessage('Votre proposition est trop courte');
+        end
+      ELSE
+        begin
+          checkLength := false;
+          ShowMessage('Votre proposition est trop longue');
+        end;
+    end
+  ELSE
+    checkLength := true;
+END;
+
+procedure TForm1.setEssai(Sender : TObject);
+
+begin
+  case length(mot) of
+    3 : EnbEssai.Text := '4';
+    4 : EnbEssai.Text := '7';
+    5 : EnbEssai.Text := '10';
+    6 : EnbEssai.Text := '16';
+    7 : EnbEssai.Text := '20';
+  end;
+end;
+
+procedure TForm1.checkVictory(Sender: TObject);
+
+begin
+  if strtoint(Ebulls.Text) = length(mot) then
+    begin
+      ShowMessage('Félicitation ! Vous avez gagné !');
+      BresetClick(sender);
+      Emot.text := '';
+    end
+  ELSE
+    checkDefeat(Sender);
+end;
+
+procedure TForm1.checkDefeat(Sender: TObject);
+
+Begin
+  EnbEssai.Text := inttostr(strtoint(EnbEssai.Text) - 1);
+  if strtoint(EnbEssai.Text) = 0 then
+  begin
+    ShowMessage('Vous avez perdu(e)');
+    BresetClick(Sender);
+  end;
+End;
+
+function TForm1.checkEmot(Sender : TObject) : BOOLEAN;    //renvoie true si le mot est valide (pas de chiffre ou cahactère spé
+
+VAR
+  i : INTEGER;
+
+BEGIN
+  Emot.Text := ansilowercase(Emot.Text);
+  for i := 1 to length(mot) do
+    begin
+      if (ord(Emot.Text[i])<97) OR (ord(Emot.Text[i])>122) then
+        checkEmot := false
+      ELSE
+        checkEmot := true;
+    end;
+END;
+
+procedure TForm1.checkCows(Sender : TObject);
+
+VAR
+  i,j : INTEGER;
+
+begin
+  Ecows.Text := '0';
+  for I := 1 to length(mot) do
+    begin
+      for j := 1 to length(mot) do
+        begin
+          if I <> j then
+            begin
+              if mot[i] = (Emot.Text[j]) then Ecows.Text := inttostr(strtoint(Ecows.Text)+ 1);
+            end;
+        end;
+    end;
+end;
+
+
+procedure TForm1.checkBulls(Sender: TObject);
+
+VAR
+  i : INTEGER;
+
+begin
+  Ebulls.Text := '0';
+  for i := 1 to length(mot) do
+  begin
+    if mot[i] = (Emot.Text[i]) then
+    begin
+      Ebulls.Text := inttostr(strtoint(Ebulls.Text)+ 1);
+    end;
+  end;
+end;
+
+procedure TForm1.BquitClick(Sender: TObject);
+begin
+  close;
+end;
+
+procedure TForm1.BresetClick(Sender: TObject);
+VAR
+  i : INTEGER;
+
+begin
+    Mmots.Lines.LoadFromFile('mots.txt');  //marche pas jsp pk, à arranger
+    i:=random(10);
+    mot := (Mmots.Lines[i]);
+    EnbChar.Text := inttostr(length(mot));
+    case length(mot) of
+      3 : nbEssai := 4;
+      4 : nbEssai := 7;
+      5 : nbEssai := 10;
+      6 : nbEssai := 16;
+      7 : nbEssai := 20;
+    end;
+    EnbEssai.text:=inttostr(nbEssai);
+    Ebulls.Text := '0';
+    Ecows.Text := '0';
+    Emot.Text := '';
+    setEssai(Sender);
+    LaffMotDebug.Caption := mot;
+end;
+
+procedure TForm1.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  if MessageDlg('Voulez vous vraiment quitter ?', mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
+    CanClose := true
+  ELSE
+    CanClose := false;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+//VAR
+
+begin
+  BresetClick(Sender);
+end;
+
+end.
